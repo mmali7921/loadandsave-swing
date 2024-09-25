@@ -1,5 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Main{
@@ -19,5 +26,50 @@ public class Main{
         frame.add(add);
         frame.add(save);
         frame.add(load);
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               String command = e.getActionCommand();
+               String input = text.getText();
+
+              switch (command){
+                  case "Save":
+                      try(
+                          BufferedWriter bw = new BufferedWriter(new FileWriter("data.txt"))){
+                      bw.write(input);
+
+                      }
+                        catch (IOException ex){
+                            ex.printStackTrace();
+                        }
+
+                      break;
+                  case "Load":
+                        try(BufferedReader br = new BufferedReader(new FileReader("data.txt"))){
+                            String line = br.readLine();
+                            text.setText(line);
+                        }
+                        catch (IOException ex){
+                            ex.printStackTrace();
+                        }
+                      break;
+                  case "Add":
+                      String[] data = input.split(",");
+                        int sum = 0;
+                        for (String s : data){
+                            sum += Integer.parseInt(s);
+                        }
+                        text.setText(String.valueOf(sum));
+                      break;
+                  default:
+                      break;
+              }
+
+            }
+        };
+
+        add.addActionListener(actionListener);
+        save.addActionListener(actionListener);
+        load.addActionListener(actionListener);
     }
 }
